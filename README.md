@@ -1,97 +1,173 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# ♻️ descartAR
 
-# Getting Started
+Aplicativo educacional que utiliza **Realidade Aumentada** para auxiliar no aprendizado sobre o descarte correto de resíduos.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+O projeto foi desenvolvido no contexto da **UPX 8** com foco em sustentabilidade, educação ambiental e uso de tecnologia interativa para melhorar a compreensão sobre a separação correta do lixo.
 
-## Step 1: Start Metro
+---
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## 🌱 Sobre o projeto
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+O **descartAR** é uma aplicação mobile desenvolvida para tornar o processo de aprendizagem sobre descarte de resíduos mais visual, interativo e prático.
 
-```sh
-# Using npm
-npm start
+Por meio da câmera do celular e de elementos 3D em Realidade Aumentada, o usuário recebe diferentes resíduos e deve escolher a lixeira correta para realizar o descarte.
 
-# OR using Yarn
-yarn start
-```
+A proposta é transformar um conteúdo normalmente apresentado de forma teórica em uma experiência interativa.
 
-## Step 2: Build and run your app
+---
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+## 🎯 Objetivo
+
+O principal objetivo do projeto é:
+
+> Utilizar Realidade Aumentada como ferramenta de apoio à educação ambiental, auxiliando usuários a identificar corretamente a categoria de descarte de diferentes tipos de resíduos.
+
+Além disso, o projeto busca:
+
+- incentivar práticas sustentáveis;
+- melhorar a compreensão sobre coleta seletiva;
+- identificar categorias que geram maior confusão;
+- registrar dados das sessões realizadas;
+- permitir análise dos resultados obtidos.
+
+---
+
+## ❗ Problema
+
+Mesmo em ambientes educacionais, ainda existem dificuldades relacionadas à separação correta dos resíduos.
+
+Alguns materiais podem gerar dúvidas entre categorias como:
+
+- plástico;
+- papel;
+- vidro;
+- metal;
+- orgânico;
+- rejeito.
+
+O descarte incorreto pode contaminar materiais recicláveis e dificultar processos de coleta seletiva e reciclagem.
+
+O **descartAR** busca trabalhar esse problema através de uma experiência educacional interativa.
+
+---
+
+## 📱 Como funciona
+
+O fluxo principal da aplicação é:
+
+1. O participante informa seu identificador.
+2. Seleciona um banco de questões.
+3. Recebe instruções antes de iniciar.
+4. A câmera é aberta em modo de Realidade Aumentada.
+5. As lixeiras são exibidas em 3D.
+6. Um resíduo é apresentado ao participante.
+7. O usuário toca na lixeira que considera correta.
+8. O aplicativo informa se a resposta está correta ou incorreta.
+9. A sessão continua até todos os resíduos serem apresentados.
+10. Ao final, o aplicativo gera um resumo da sessão.
+
+---
+
+## 🗑️ Categorias de descarte
+
+O aplicativo trabalha com seis categorias:
+
+| Categoria | Cor |
+|---|---|
+| Papel | 🔵 Azul |
+| Plástico | 🔴 Vermelho |
+| Vidro | 🟢 Verde |
+| Metal | 🟡 Amarelo |
+| Orgânico | 🟤 Marrom |
+| Rejeito | ⚪ Cinza |
+
+As cores das lixeiras são mantidas separadas da identidade visual da interface para evitar que outros elementos da tela influenciem a resposta do participante.
+
+---
+
+## ✨ Principais funcionalidades
+
+- câmera em Realidade Aumentada;
+- renderização de lixeiras 3D;
+- interação por toque;
+- quiz de descarte de resíduos;
+- banco de questões;
+- feedback de resposta correta ou incorreta;
+- justificativa após resposta;
+- opção de pular item;
+- contador de progresso;
+- saída segura da sessão;
+- tela de resultado;
+- registro de erros e acertos;
+- matriz de confusão entre categorias;
+- registro de duração da sessão;
+- exportação dos dados em JSON.
+
+---
+
+## 🥽 Realidade Aumentada
+
+A experiência de AR é construída utilizando **ViroReact**.
+
+As lixeiras são renderizadas como elementos 3D sobre a imagem real da câmera do celular.
+
+Atualmente, os objetos acompanham a orientação da câmera, permitindo que o participante continue visualizando as lixeiras enquanto movimenta o aparelho.
+
+Também está prevista a utilização de uma **âncora visual por QR Code** para iniciar a experiência em Realidade Aumentada.
+
+---
+
+## 🧠 Interação
+
+Durante os testes de desenvolvimento, a interação diretamente sobre os objetos 3D apresentou baixa precisão em alguns dispositivos.
+
+Para melhorar a experiência do usuário, a aplicação utiliza:
+
+- **ViroReact** para renderização dos objetos 3D;
+- **React Native Pressable** para capturar os toques do participante.
+
+Dessa forma, a experiência permanece em Realidade Aumentada, mas a interação se torna mais estável e confortável.
+
+---
+
+## 🛠️ Tecnologias utilizadas
+
+### Aplicação
+
+- React Native
+- TypeScript
+- TSX
+
+### Realidade Aumentada
+
+- ViroReact
+- ARCore
 
 ### Android
 
-```sh
-# Using npm
-npm run android
+- Kotlin
+- Gradle
+- Android SDK
 
-# OR using Yarn
-yarn android
-```
+### Design
 
-### iOS
+- Figma
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+### Análise de dados
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+- JSON
+- Power BI
 
-```sh
-bundle install
-```
+### Versionamento
 
-Then, and every time you update your native dependencies, run:
+- Git
+- GitHub
 
-```sh
-bundle exec pod install
-```
+---
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## 📚 Principais bibliotecas
 
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+```txt
+react-native
+@reactvision/react-viro
+react
