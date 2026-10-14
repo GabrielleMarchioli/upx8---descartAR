@@ -33,7 +33,6 @@ import {
 } from './src/data/residuos'
 
 import {
-  DESTINOS,
   type DestinoId,
 } from './src/data/lixeiras'
 
@@ -58,83 +57,63 @@ type EstadoFeedback = {
   justificativa: string
 }
 
-const DURACAO_FEEDBACK_MS =
-  2600
+const DURACAO_FEEDBACK_MS = 2600
 
 export default function App() {
-  const [
-    etapa,
-    setEtapa,
-  ] =
-    useState<Etapa>(
-      'identificacao',
-    )
+  /*
+   * TODOS os hooks ficam aqui em cima,
+   * antes de qualquer return condicional.
+   */
+  const [etapa, setEtapa] =
+    useState<Etapa>('identificacao')
 
-  const [
-    feedback,
-    setFeedback,
-  ] =
-    useState<EstadoFeedback | null>(
-      null,
-    )
+  const [feedback, setFeedback] =
+    useState<EstadoFeedback | null>(null)
 
-  const [
-    resumo,
-    setResumo,
-  ] =
-    useState<Resumo | null>(
-      null,
-    )
+  const [resumo, setResumo] =
+    useState<Resumo | null>(null)
 
-  const [
-    modalSairVisivel,
-    setModalSairVisivel,
-  ] =
+  const [modalSairVisivel, setModalSairVisivel] =
+    useState(false)
+
+  /*
+   * true depois que a cena AR detectou o QR
+   * de âncora e posicionou as lixeiras.
+   */
+  const [marcadorEncontrado, setMarcadorEncontrado] =
     useState(false)
 
   /*
    * Só força o React a atualizar
    * quando o QuizManager muda.
-   *
    * NÃO usar como key do Viro.
    */
-  const [, setVersao] =
-    useState(0)
+  const [, setVersao] = useState(0)
 
   const quiz =
-    useRef<QuizManager | null>(
-      null,
-    )
+    useRef<QuizManager | null>(null)
 
-  const travado =
-    useRef(false)
+  const travado = useRef(false)
 
   const feedbackTimeout =
-    useRef<
-      ReturnType<
-        typeof setTimeout
-      > | null
-    >(null)
+    useRef<ReturnType<typeof setTimeout> | null>(
+      null,
+    )
 
   const iniciar = useCallback(
     async (
       participante: string,
       banco: 'A' | 'B',
     ) => {
-      if (
-        Platform.OS ===
-        'android'
-      ) {
+      if (Platform.OS === 'android') {
         const permissao =
           await PermissionsAndroid.request(
-            PermissionsAndroid
-              .PERMISSIONS.CAMERA,
+            PermissionsAndroid.PERMISSIONS.CAMERA,
           )
 
         if (
           permissao !==
-          PermissionsAndroid
-            .RESULTS.GRANTED
+          PermissionsAndroid.RESULTS.GRANTED
         ) {
           Alert.alert(
             'Câmera bloqueada',
@@ -145,457 +124,249 @@ export default function App() {
         }
       }
 
-      const itens =
-        embaralhar(
-          BANCOS[banco],
-        )
+      const itens = embaralhar(BANCOS[banco])
 
-      quiz.current =
-        new QuizManager(
-          itens,
-          banco,
-          participante,
-        )
+      quiz.current = new QuizManager(
+        itens,
+        banco,
+        participante,
+      )
 
       quiz.current.iniciar()
 
-      setEtapa(
-        'preparo',
-      )
+      setEtapa('preparo')
     },
     [],
   )
 
-  const finalizar =
-    useCallback(() => {
-      if (!quiz.current) {
+  const abrirCamera = useCallback(() => {
+    setMarcadorEncontrado(false)
+    setEtapa('quiz')
+  }, [])
+
+  const finalizar = useCallback(() => {
+    if (!quiz.current) {
+      return
+    }
+
+    setResumo(quiz.current.resumo())
+
+    setEtapa('resultado')
+  }, [])
+
+  const voltarInicio = useCallback(() => {
+    if (feedbackTimeout.current) {
+      clearTimeout(feedbackTimeout.current)
+
+      feedbackTimeout.current = null
+    }
+
+    quiz.current = null
+    travado.current = false
+
+    setFeedback(null)
+    setResumo(null)
+    setMarcadorEncontrado(false)
+    setModalSairVisivel(false)
+
+    setEtapa('identificacao')
+  }, [])
+
+  const selecionarDestino = useCallback(
+    (destino: DestinoId) => {
+      const q = quiz.current
+
+      if (!q || travado.current || q.finalizado) {
         return
       }
 
-      setResumo(
-        quiz.current.resumo(),
-      )
+      const item = q.atual
 
-      setEtapa(
-        'resultado',
-      )
-    }, [])
-
-  const voltarInicio =
-    useCallback(() => {
-      if (
-        feedbackTimeout.current
-      ) {
-        clearTimeout(
-          feedbackTimeout.current,
-        )
-
-        feedbackTimeout.current =
-          null
-      }
-
-      quiz.current = null
-      travado.current = false
-
-      setFeedback(null)
-      setResumo(null)
-
-      setModalSairVisivel(
-        false,
-      )
-
-      setEtapa(
-        'identificacao',
-      )
-    }, [])
-
-  const selecionarDestino =
-    useCallback(
-      (
-        destino: DestinoId,
-      ) => {
-        const q =
-          quiz.current
-
-        if (
-          !q ||
-          travado.current ||
-          q.finalizado
-        ) {
-          return
-        }
-
-        const item =
-          q.atual
-
-        if (!item) {
-          return
-        }
-
-        console.log(
-          '[QUIZ] Destino selecionado:',
-          destino,
-        )
-
-        const {
-          acerto,
-          justificativa,
-        } =
-          q.responder(
-            destino,
-          )
-
-        travado.current =
-          true
-
-        setFeedback({
-          acerto,
-          escolhido: destino,
-          correto:
-            item.destinoCorreto,
-          justificativa,
-        })
-
-        feedbackTimeout.current =
-          setTimeout(
-            () => {
-              travado.current =
-                false
-
-              feedbackTimeout.current =
-                null
-
-              setFeedback(
-                null,
-              )
-
-              setVersao(
-                (v) =>
-                  v + 1,
-              )
-
-              if (
-                q.finalizado
-              ) {
-                finalizar()
-              }
-            },
-            DURACAO_FEEDBACK_MS,
-          )
-      },
-      [finalizar],
-    )
-
-  const pular =
-    useCallback(() => {
-      const q =
-        quiz.current
-
-      if (
-        !q ||
-        travado.current ||
-        q.finalizado
-      ) {
+      if (!item) {
         return
       }
 
-      q.pular()
-
-      setVersao(
-        (v) => v + 1,
+      console.log(
+        '[QUIZ] Destino selecionado:',
+        destino,
       )
 
-      if (
-        q.finalizado
-      ) {
-        finalizar()
-      }
-    }, [finalizar])
+      const { acerto, justificativa } =
+        q.responder(destino)
 
-  const sairDaCamera =
-    useCallback(() => {
-      setModalSairVisivel(
-        true,
-      )
-    }, [])
+      travado.current = true
 
-  const reiniciar =
-    useCallback(() => {
-      voltarInicio()
-    }, [voltarInicio])
+      setFeedback({
+        acerto,
+        escolhido: destino,
+        correto: item.destinoCorreto,
+        justificativa,
+      })
 
-  const viroAppProps =
-    useMemo(
-      () => ({
-        /*
-         * Agora o Viro não recebe mais
-         * callback de clique.
-         *
-         * Ele só precisa saber qual
-         * lixeira destacar quando há erro.
-         */
-        destinoDestacado:
-          feedback &&
-          !feedback.acerto
-            ? feedback.correto
-            : null,
-      }),
-      [
-        feedback,
-      ],
-    )
+      feedbackTimeout.current = setTimeout(() => {
+        travado.current = false
 
-  if (
-    etapa ===
-    'identificacao'
-  ) {
-    return (
-      <TelaIdentificacao
-        onContinuar={
-          iniciar
+        feedbackTimeout.current = null
+
+        setFeedback(null)
+
+        setVersao((v) => v + 1)
+
+        if (q.finalizado) {
+          finalizar()
         }
-      />
+      }, DURACAO_FEEDBACK_MS)
+    },
+    [finalizar],
+  )
+
+  const pular = useCallback(() => {
+    const q = quiz.current
+
+    if (
+      !marcadorEncontrado ||
+      !q ||
+      travado.current ||
+      q.finalizado
+    ) {
+      return
+    }
+
+    q.pular()
+
+    setVersao((v) => v + 1)
+
+    if (q.finalizado) {
+      finalizar()
+    }
+  }, [finalizar, marcadorEncontrado])
+
+  const sairDaCamera = useCallback(() => {
+    setModalSairVisivel(true)
+  }, [])
+
+  const reiniciar = useCallback(() => {
+    voltarInicio()
+  }, [voltarInicio])
+
+  /*
+   * O toque agora acontece direto nas lixeiras
+   * 3D (onClick do Viro). A cena avisa o App
+   * pelos callbacks abaixo.
+   */
+  const viroAppProps = useMemo(
+    () => ({
+      destinoDestacado:
+        feedback && !feedback.acerto
+          ? feedback.correto
+          : null,
+      onSelecionarDestino: selecionarDestino,
+      onMarcadorEncontrado: () =>
+        setMarcadorEncontrado(true),
+    }),
+    [feedback, selecionarDestino],
+  )
+
+  if (etapa === 'identificacao') {
+    return (
+      <TelaIdentificacao onContinuar={iniciar} />
     )
   }
 
-  if (
-    etapa ===
-    'preparo'
-  ) {
-    return (
-      <TelaPreparo
-        onAbrir={() =>
-          setEtapa(
-            'quiz',
-          )
-        }
-      />
-    )
+  if (etapa === 'preparo') {
+    return <TelaPreparo onAbrir={abrirCamera} />
   }
 
-  if (
-    etapa ===
-      'resultado' &&
-    resumo
-  ) {
+  if (etapa === 'resultado' && resumo) {
     return (
       <TelaResultado
-        resumo={
-          resumo
-        }
-        onReiniciar={
-          reiniciar
-        }
+        resumo={resumo}
+        onReiniciar={reiniciar}
       />
     )
   }
 
-  const item =
-    quiz.current?.atual
+  const item = quiz.current?.atual
 
   const progresso =
-    quiz.current
-      ?.progresso ?? {
+    quiz.current?.progresso ?? {
       atual: 0,
       total: 0,
     }
 
   return (
-    <View
-      style={
-        estilos.container
-      }
-    >
-      {/*
-       * CAMADA 1
-       *
-       * Câmera + objetos 3D.
-       */}
+    <View style={estilos.container}>
+      {/* CAMADA 1: câmera + objetos 3D */}
       <ViroARSceneNavigator
         autofocus
         initialScene={{
-          scene:
-            DescarteARScene,
+          scene: DescarteARScene,
         }}
-        viroAppProps={
-          viroAppProps
-        }
-        style={
-          estilos.ar
-        }
+        viroAppProps={viroAppProps}
+        style={estilos.ar}
       />
 
-      {/*
-       * CAMADA 2
-       *
-       * Áreas de toque normais do
-       * React Native.
-       *
-       * Elas ficam posicionadas
-       * exatamente sobre a região
-       * onde as lixeiras aparecem.
-       */}
-      {item && (
+      {/* CAMADA 2: dica até achar o QR */}
+      {!marcadorEncontrado && (
         <View
-          style={
-            estilos.areaLixeiras
-          }
-          pointerEvents="box-none"
+          style={estilos.dicaAncora}
+          pointerEvents="none"
         >
-          {DESTINOS.map(
-            (destino) => (
-              <Pressable
-                key={
-                  destino.id
-                }
-                style={({
-                  pressed,
-                }) => [
-                  estilos.areaToque,
-
-                  pressed &&
-                    estilos.areaToquePressionada,
-                ]}
-                disabled={
-                  !!feedback
-                }
-                onPress={() =>
-                  selecionarDestino(
-                    destino.id,
-                  )
-                }
-                accessibilityRole="button"
-                accessibilityLabel={`Lixeira ${destino.nome}`}
-              >
-                {/*
-                 * Este texto fica invisível.
-                 *
-                 * Ele existe para deixar
-                 * a área acessível para
-                 * leitores de tela.
-                 */}
-                <Text
-                  style={
-                    estilos.textoToqueInvisivel
-                  }
-                >
-                  {
-                    destino.nome
-                  }
-                </Text>
-              </Pressable>
-            ),
-          )}
+          <Text style={estilos.textoDica}>
+            Aponte a câmera para o QR de âncora
+          </Text>
         </View>
       )}
 
-      {/*
-       * CAMADA 3
-       *
-       * HUD normal do quiz.
-       */}
+      {/* CAMADA 3: HUD do quiz */}
       {item && (
         <HudQuiz
-          residuo={
-            item
-          }
-          progresso={
-            progresso
-          }
-          onPular={
-            pular
-          }
-          onSair={
-            sairDaCamera
-          }
+          residuo={item}
+          progresso={progresso}
+          onPular={pular}
+          onSair={sairDaCamera}
         />
       )}
 
-      {feedback && (
-        <Feedback
-          {...feedback}
-        />
-      )}
+      {feedback && <Feedback {...feedback} />}
 
       <Modal
-        visible={
-          modalSairVisivel
-        }
+        visible={modalSairVisivel}
         transparent
         animationType="fade"
         onRequestClose={() =>
-          setModalSairVisivel(
-            false,
-          )
+          setModalSairVisivel(false)
         }
       >
-        <View
-          style={
-            estilos.modalFundo
-          }
-        >
-          <View
-            style={
-              estilos.modalCard
-            }
-          >
-            <Text
-              style={
-                estilos.modalTitulo
-              }
-            >
+        <View style={estilos.modalFundo}>
+          <View style={estilos.modalCard}>
+            <Text style={estilos.modalTitulo}>
               Sair da sessão?
             </Text>
 
-            <Text
-              style={
-                estilos.modalTexto
-              }
-            >
-              O progresso desta
-              sessão será
-              descartado e você
-              voltará para a tela
-              inicial.
+            <Text style={estilos.modalTexto}>
+              O progresso desta sessão será
+              descartado e você voltará para a
+              tela inicial.
             </Text>
 
-            <View
-              style={
-                estilos.modalAcoes
-              }
-            >
+            <View style={estilos.modalAcoes}>
               <Pressable
-                style={
-                  estilos.botaoContinuar
-                }
+                style={estilos.botaoContinuar}
                 onPress={() =>
-                  setModalSairVisivel(
-                    false,
-                  )
+                  setModalSairVisivel(false)
                 }
               >
-                <Text
-                  style={
-                    estilos.textoContinuar
-                  }
-                >
+                <Text style={estilos.textoContinuar}>
                   Continuar sessão
                 </Text>
               </Pressable>
 
               <Pressable
-                style={
-                  estilos.botaoSair
-                }
-                onPress={
-                  voltarInicio
-                }
+                style={estilos.botaoSair}
+                onPress={voltarInicio}
               >
-                <Text
-                  style={
-                    estilos.textoSair
-                  }
-                >
+                <Text style={estilos.textoSair}>
                   Sair
                 </Text>
               </Pressable>
@@ -607,178 +378,97 @@ export default function App() {
   )
 }
 
-const estilos =
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor:
-        '#000000',
-    },
+const estilos = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000000',
+  },
 
-    ar: {
-      flex: 1,
-    },
+  ar: {
+    flex: 1,
+  },
 
-    /*
-     * Essa é a região horizontal
-     * onde as 6 lixeiras ficam.
-     *
-     * É a principal configuração
-     * para alinhar toque e 3D.
-     */
-    areaLixeiras: {
-      position:
-        'absolute',
+  dicaAncora: {
+    position: 'absolute',
+    left: 24,
+    right: 24,
+    top: '42%',
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderRadius: 14,
+    backgroundColor: 'rgba(32, 36, 43, 0.88)',
+    alignItems: 'center',
+    zIndex: 20,
+  },
 
-      left: '4%',
-      right: '4%',
+  textoDica: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    textAlign: 'center',
+  },
 
-      /*
-       * Aproximadamente no meio
-       * inferior da tela.
-       */
-      top: '46%',
+  modalFundo: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.72)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
 
-      height: 150,
+  modalCard: {
+    width: '100%',
+    maxWidth: 420,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 22,
+  },
 
-      flexDirection:
-        'row',
+  modalTitulo: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 10,
+  },
 
-      alignItems:
-        'center',
+  modalTexto: {
+    fontSize: 16,
+    lineHeight: 22,
+    color: '#374151',
+    marginBottom: 22,
+  },
 
-      justifyContent:
-        'space-between',
+  modalAcoes: {
+    gap: 12,
+  },
 
-      zIndex: 20,
-    },
+  botaoContinuar: {
+    minHeight: 50,
+    borderRadius: 12,
+    backgroundColor: '#1F2937',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
 
-    /*
-     * Cada lixeira recebe 1/6
-     * da largura total.
-     *
-     * A altura grande torna o
-     * clique confortável.
-     */
-    areaToque: {
-      flex: 1,
+  textoContinuar: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
 
-      height: 135,
+  botaoSair: {
+    minHeight: 50,
+    borderRadius: 12,
+    backgroundColor: '#991B1B',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
 
-      marginHorizontal: 1,
-
-      borderRadius: 12,
-
-      alignItems:
-        'center',
-
-      justifyContent:
-        'center',
-
-      /*
-       * Totalmente transparente.
-       */
-      backgroundColor:
-        'rgba(255,255,255,0.001)',
-    },
-
-    /*
-     * Quando pressiona existe uma
-     * alteração mínima, praticamente
-     * invisível.
-     *
-     * Se quiser testar visualmente
-     * onde estão as áreas, pode trocar
-     * 0.015 por 0.15 temporariamente.
-     */
-    areaToquePressionada: {
-      backgroundColor:
-        'rgba(255,255,255,0.015)',
-    },
-
-    textoToqueInvisivel: {
-      opacity: 0,
-      fontSize: 1,
-    },
-
-    modalFundo: {
-      flex: 1,
-      backgroundColor:
-        'rgba(0, 0, 0, 0.72)',
-      alignItems:
-        'center',
-      justifyContent:
-        'center',
-      paddingHorizontal: 24,
-    },
-
-    modalCard: {
-      width: '100%',
-      maxWidth: 420,
-      backgroundColor:
-        '#FFFFFF',
-      borderRadius: 18,
-      padding: 22,
-    },
-
-    modalTitulo: {
-      fontSize: 22,
-      fontWeight:
-        '700',
-      color:
-        '#111827',
-      marginBottom: 10,
-    },
-
-    modalTexto: {
-      fontSize: 16,
-      lineHeight: 22,
-      color:
-        '#374151',
-      marginBottom: 22,
-    },
-
-    modalAcoes: {
-      gap: 12,
-    },
-
-    botaoContinuar: {
-      minHeight: 50,
-      borderRadius: 12,
-      backgroundColor:
-        '#1F2937',
-      alignItems:
-        'center',
-      justifyContent:
-        'center',
-      paddingHorizontal: 16,
-    },
-
-    textoContinuar: {
-      fontSize: 16,
-      fontWeight:
-        '700',
-      color:
-        '#FFFFFF',
-    },
-
-    botaoSair: {
-      minHeight: 50,
-      borderRadius: 12,
-      backgroundColor:
-        '#991B1B',
-      alignItems:
-        'center',
-      justifyContent:
-        'center',
-      paddingHorizontal: 16,
-    },
-
-    textoSair: {
-      fontSize: 16,
-      fontWeight:
-        '700',
-      color:
-        '#FFFFFF',
-    },
-  })
+  textoSair: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+})
