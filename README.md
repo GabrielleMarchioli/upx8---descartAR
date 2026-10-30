@@ -83,7 +83,7 @@ O app tem dois bancos de questões equivalentes (A e B), que permitem aplicar um
 | RF04 | Posicionar lixeiras | Posiciona as 6 lixeiras lado a lado no centro da tela, após o reconhecimento | ✅ |
 | RF05 | Manter lixeiras sem o QR | Após o reconhecimento, as lixeiras permanecem mesmo sem o QR no quadro | ✅ |
 | RF06 | Selecionar lixeira por toque | Toque direto na lixeira 3D registra a resposta | ✅ |
-| RF07 | Animação de seleção | A lixeira tocada sobe e desce | 🚧 |
+| RF07 | Animação de seleção | A lixeira tocada sobe e desce | ✅ |
 | RF08 | Feedback educativo | Mostra acerto ou erro e a justificativa, com destaque da lixeira correta | ✅ |
 | RF09 | Pular item | Permite pular o resíduo atual (após encontrar o QR) | ✅ |
 | RF10 | Sair da sessão | Modal de confirmação para sair e descartar a sessão | ✅ |
