@@ -9,7 +9,7 @@ Aplicativo Android de Realidade Aumentada que ensina o descarte correto de resí
 | Item | Informação |
 | --- | --- |
 | Projeto | descartAR |
-| Equipe | Afonso Henrique - 235385, Giulianno Gonçalves - 235484, Gabrielle Amaro Marchioli - 236775, Nathalia Atamanchuk Baleeiro - 235215, Kaique Vecchia Alves - 235446, Micael Almeida Teodoro Dos Reis 2349 |
+| Equipe | descartAR |
 | Curso | Engenharia da Computação, Centro Universitário Facens |
 | Disciplina | UPX801 - Usina de Projetos Experimentais: Realidade Aumentada |
 | Professor | Prof. Dr. Daniel Ohata |
@@ -20,8 +20,11 @@ Aplicativo Android de Realidade Aumentada que ensina o descarte correto de resí
 | Nome | RA | Responsabilidade |
 | --- | --- | --- |
 | Gabrielle Marchioli | 236775 | Desenvolvimento React Native/TypeScript, integração com Viro (ARCore), cena AR, lógica do quiz, bancos de questões, testes em dispositivo |
-| [PREENCHER] | [PREENCHER] | [PREENCHER: responsabilidade técnica real] |
-| [PREENCHER] | [PREENCHER] | [PREENCHER: responsabilidade técnica real] |
+| Afonso Henrique | 235385 | Desenvolvimento React Native/TypeScript |
+| Giulianno Gonçalves | 235484 | integração com Viro (ARCore) |
+| Kaique Vecchia Alves | 235446 | bancos de questões |
+| Micael Almeida Teodoro Dos Reis | 234941 | Documentação |
+| Nathalia Atamanchuk Baleeiro | 235215 | Documentação |
 
 ---
 
@@ -86,7 +89,7 @@ O app tem dois bancos de questões equivalentes (A e B), que permitem aplicar um
 | RF10 | Sair da sessão | Modal de confirmação para sair e descartar a sessão | ✅ |
 | RF11 | Banco de questões A e B | 30 itens por banco, 5 por lixeira, 15 diretos e 15 ambíguos | ✅ |
 | RF12 | Tela de resultado | Resumo da sessão ao final do quiz | ✅ |
-| RF13 | Suporte a iOS | Execução em iPhone | ⬜ |
+| RF13 | Suporte a iOS | Execução em iPhone | ❌|
 
 Legenda: ✅ Implementado, 🚧 Em desenvolvimento, ⬜ Planejado, ❌ Cancelado.
 
@@ -108,14 +111,13 @@ Legenda: ✅ Implementado, 🚧 Em desenvolvimento, ⬜ Planejado, ❌ Cancelado
 | --- | --- | --- |
 | React Native (CLI) | 0.86.0 | Aplicativo móvel |
 | React | 19.2.3 | Interface e estado |
-| TypeScript | [PREENCHER: ver `package.json`] | Tipagem do código |
+| TypeScript | 5.9.3 | Tipagem do código |
 | @reactvision/react-viro | ^3.0.3 | Componentes de RA (cena, marcador, objetos 3D, animações) |
 | ARCore | Via Viro | Rastreamento de imagem e movimento no Android |
 | Hermes | Padrão do RN 0.86 | Engine JavaScript |
 | Gradle | 9.3.1 | Build Android |
 | JDK | 17 | Build Android |
-| Python | [PREENCHER: versão] | Script gerador do QR (`gerar_qr.py`) |
-| qrcode e Pillow | [PREENCHER: versões] | Geração da imagem do QR |
+| Python | 3.12.10 | Script gerador do QR (`gerar_qr.py`) |
 | Git e GitHub | - | Controle de versão |
 
 ---
@@ -126,8 +128,8 @@ Legenda: ✅ Implementado, 🚧 Em desenvolvimento, ⬜ Planejado, ❌ Cancelado
 | --- | --- | --- |
 | Computador | Windows | Desenvolvimento e build |
 | Motorola Moto G75 5G | Android 16, arm64 | Dispositivo principal de teste |
-| Xiaomi 22101316UG | [PREENCHER: sistema e resultado] | [PREENCHER: teste ou não utilizado] |
-| QR de âncora impresso | 15 cm de largura total, papel fosco | Marcador de RA |
+| Xiaomi 22101316UG | Android 16, arm64 | Dispositivo reserva de teste |
+| QR de âncora | geralmente na tela do notebook | Marcador de RA |
 
 ---
 
@@ -250,7 +252,7 @@ A lista completa e as versões exatas estão em `package.json` e `package-lock.j
 
 Ambiente de desenvolvimento em Windows:
 
-1. Instalar o Node.js ([PREENCHER: versão LTS usada]).
+1. Instalar o Node.js
 2. Instalar o JDK 17.
 3. Instalar o Android Studio com Android SDK, Platform-Tools e NDK/CMake.
 4. Configurar as variáveis `ANDROID_HOME` e `JAVA_HOME`.
@@ -266,7 +268,7 @@ Para validar o ambiente: `npx react-native doctor`.
 ## 16. Como Executar o Projeto
 
 ```bash
-git clone [PREENCHER: URL do repositório]
+git clone https://github.com/GabrielleMarchioli/upx8---descartAR
 cd DescarteAR2
 npm install
 ```
@@ -300,7 +302,7 @@ python gerar_qr.py src/assets/qr_ancora.png
 
 ## 17. Como Utilizar a Aplicação
 
-1. Imprimir o QR de âncora (`src/assets/qr_ancora.png`) com 15 cm de largura total, em papel fosco.
+1. Utilizar QR de âncora (`src/assets/qr_ancora.png`), pode ser impresso ou na tela do PC.
 2. Abrir o app e preencher a identificação do participante.
 3. Escolher o banco de questões (A ou B).
 4. Autorizar a câmera.
@@ -347,8 +349,8 @@ Os diagramas de arquitetura e de fluxo da RA estão nas seções 10 e 11. Arquiv
 | Persistência | Tirar o QR do quadro | Lixeiras permanecem | Permanecem | ✅ |
 | Toque na lixeira | Tocar em cada lixeira | Resposta registrada | Funciona; houve falhas intermitentes que diminuíram após ajustes | ✅ |
 | Feedback | Responder certo e errado | Mostrar feedback e destaque | Exibido | ✅ |
-| Animação da lixeira | Tocar na lixeira | Subir e descer | [PREENCHER: resultado] | 🚧 |
-| Fim da sessão | Responder todos os itens | Tela de resultado | [PREENCHER: resultado] | [PREENCHER] |
+| Animação da lixeira | Tocar na lixeira | Subir e descer | Lixeiras sobem e descem correspondentes ao toque | ✅ |
+| Fim da sessão | Responder todos os itens | Tela de resultado | Tela de resultado e export do JSON | ✅ |
 
 ---
 
@@ -357,7 +359,7 @@ Os diagramas de arquitetura e de fluxo da RA estão nas seções 10 e 11. Arquiv
 | Dispositivo | Sistema | Versão | Resultado |
 | --- | --- | --- | --- |
 | Motorola Moto G75 5G | Android | 16 | Compatível (câmera, QR, lixeiras e toque funcionando) |
-| Xiaomi 22101316UG | Android | [PREENCHER] | [PREENCHER: só preencher após testar] |
+| Xiaomi 22101316UG | Android | 16 | (câmera, QR, lixeiras e toque funcionando) |
 
 Apenas dispositivos efetivamente testados devem constar na tabela.
 
@@ -423,9 +425,9 @@ Apenas dispositivos efetivamente testados devem constar na tabela.
 | Marcador QR de âncora | Gabrielle | ✅ |
 | Lixeiras 3D e interação por toque | Gabrielle | ✅ |
 | Bancos de questões A e B (30 itens cada) | Gabrielle | ✅ |
-| Animação das lixeiras | Gabrielle | 🚧 |
-| Testes e documentação | Equipe | 🚧 |
-| Coleta de dados | [PREENCHER] | ⬜ |
+| Animação das lixeiras | Gabrielle | ✅ |
+| Testes e documentação | Afonso, Nathalia, Micael, Kaique | 🚧 |
+| Coleta de dados | Afonso | ✅ |
 
 ---
 
