@@ -9,17 +9,17 @@ Aplicativo Android de Realidade Aumentada que ensina o descarte correto de resí
 | Item | Informação |
 | --- | --- |
 | Projeto | descartAR |
-| Equipe | [PREENCHER: nome da equipe] |
+| Equipe | Afonso Henrique - 235385, Giulianno Gonçalves - 235484, Gabrielle Amaro Marchioli - 236775, Nathalia Atamanchuk Baleeiro - 235215, Kaique Vecchia Alves - 235446, Micael Almeida Teodoro Dos Reis 2349 |
 | Curso | Engenharia da Computação, Centro Universitário Facens |
 | Disciplina | UPX801 - Usina de Projetos Experimentais: Realidade Aumentada |
-| Professor | [PREENCHER: nome do professor] |
+| Professor | Prof. Dr. Daniel Ohata |
 | Semestre | 2026/2 |
 
 ### Integrantes
 
 | Nome | RA | Responsabilidade |
 | --- | --- | --- |
-| Gabrielle Marchioli | [PREENCHER: RA] | Desenvolvimento React Native/TypeScript, integração com Viro (ARCore), cena AR, lógica do quiz, bancos de questões, testes em dispositivo |
+| Gabrielle Marchioli | 236775 | Desenvolvimento React Native/TypeScript, integração com Viro (ARCore), cena AR, lógica do quiz, bancos de questões, testes em dispositivo |
 | [PREENCHER] | [PREENCHER] | [PREENCHER: responsabilidade técnica real] |
 | [PREENCHER] | [PREENCHER] | [PREENCHER: responsabilidade técnica real] |
 
