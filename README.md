@@ -332,10 +332,10 @@ Os diagramas de arquitetura e de fluxo da RA estão nas seções 10 e 11. Arquiv
 | Feedback | Ensinar após cada resposta | Acerto ou erro, justificativa | Ler |
 | Resultado | Mostrar o desempenho | Resumo da sessão | Reiniciar |
 
-![Tela de identificação](docs/images/tela-identificacao.png)
-![Quiz em RA](docs/images/quiz-ra.png)
-
-[PREENCHER: adicionar as capturas de tela em `docs/images/` com esses nomes]
+![Tela de identificação](src/assets/tela-identificacao.jpeg)
+![Prepara camera](src/assets/prepara-camera.jpeg)
+![Quiz em RA](src/assets/quiz-ra.jpeg)
+![Tela final](src/assets/tela-final.jpeg)
 
 ---
 
